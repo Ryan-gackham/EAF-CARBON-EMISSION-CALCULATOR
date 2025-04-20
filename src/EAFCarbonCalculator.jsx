@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import { Card, CardContent } from "./components/ui/card";
-import { Input } from "./components/ui/input";
-import { Label } from "./components/ui/label";
-import { Button } from "./components/ui/button";
+import { Card, CardContent } from "../components/ui/card";
+import { Input } from "../components/ui/input";
+import { Label } from "../components/ui/label";
+import { Button } from "../components/ui/button";
 
 const emissionFactors = {
   "天然气": { unit: "万Nm³", factor: 21.65 },
@@ -36,12 +36,12 @@ export default function EAFCarbonCalculator() {
     return total + amount * factor;
   }, 0);
 
-  const steelOutput = inputs["废钢"] || 1;
-  const emissionIntensity = totalEmissions / (steelOutput * 10000);
+  const steelOutput = inputs["废钢"] || 1; // 万吨，避免除以0
+  const emissionIntensity = totalEmissions / (steelOutput * 10000); // 吨CO2/吨钢
 
   return (
-    <div className="p-4 max-w-2xl mx-auto">
-      <h1 className="text-2xl font-bold mb-4">电弧炉碳排放计算器（基于排放因子）</h1>
+    <div className="px-4 py-6 w-full max-w-2xl mx-auto sm:px-6 md:px-8">
+      <h1 className="text-xl sm:text-2xl font-bold mb-4 text-center">电弧炉碳排放计算器（基于排放因子）</h1>
       <Card>
         <CardContent className="space-y-4 p-4">
           {Object.entries(emissionFactors).map(([material, { unit }]) => (
@@ -49,12 +49,15 @@ export default function EAFCarbonCalculator() {
               <Label>{material} 用量（{unit}）</Label>
               <Input
                 type="number"
+                inputMode="decimal"
+                className="text-base"
                 value={inputs[material]}
                 onChange={(e) => handleChange(material, e.target.value)}
               />
             </div>
           ))}
-          <div className="border-t pt-4">
+
+          <div className="border-t pt-4 text-base">
             <p>🌍 碳排放总量：<strong>{totalEmissions.toFixed(2)}</strong> 吨CO₂</p>
             <p>📊 碳排强度：<strong>{emissionIntensity.toFixed(4)}</strong> 吨CO₂ / 吨钢</p>
           </div>
